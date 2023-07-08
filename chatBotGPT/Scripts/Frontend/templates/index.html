@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat App</title>
+  </head>
+  <body>
+    <h1>Chat App</h1>
+    <div id="messages"></div>
+    <input type="text" id="message" />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+      function sendMessage() {
+        var message = document.getElementById('message').value;
+        var messageElement = document.createElement('div');
+        messageElement.textContent = 'You: ' + message;
+        document.getElementById('messages').appendChild(messageElement);
+
+        var request = new XMLHttpRequest();
+        request.open('POST', 'http://localhost:8080/analyze', true);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            var response = JSON.parse(request.responseText);
+            var responseElement = document.createElement('div');
+            responseElement.textContent = 'Response: ' + response.result;
+            document.getElementById('messages').appendChild(responseElement);
+          } else {
+            console.log('Server returned an error');
+          }
+        };
+        request.onerror = function() {
+          console.log('There was a connection error');
+        };
+
+        request.send('text=' + encodeURIComponent(message));
+        document.getElementById('message').value = '';
+      }
+    </script>
+  </body>
+</html>

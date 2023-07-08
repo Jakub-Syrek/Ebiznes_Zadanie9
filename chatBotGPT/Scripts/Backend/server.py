@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
 import openai
 
@@ -13,6 +14,7 @@ with open(file_path, 'r') as file:
 
 openai.api_key = api_key
 app = Flask(__name__)
+CORS(app)
 
 chat_history = []
 
